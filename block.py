@@ -1,30 +1,40 @@
+"""Block"""
 from time import time
-import json
 from hashlib import sha256
-from pow import *
+from proofofwork import ProofOfWork
+
 
 class Block():
-    def __init__(self, _timestamp, _data,  _prevblockhash, _hash):
-        self.Timestamp = _timestamp
-        self.Data = _data
-        self.PrevBlockHash = _prevblockhash
-        self.Hash = _hash
+    """keeps block headers"""
 
-    # NewBlock creates and returns Block
-    def new_block(self, _data: str, _prevblockhash: bytearray):
-      block = Block(time(), _data, _prevblockhash, b'')
-      print(block)
-      pow = ProofOfWork(block)
-      pow.new_proof_of_work(block)
-      nonce, hash = pow.run()
+    def __init__(self, _timestamp, _data, _prevblockhash, _hash, nonce):
+        """Initialise block"""
+        self.timestamp = _timestamp
+        self.data = _data
+        self.prev_block_hash = _prevblockhash
+        self.hash = _hash
+        self.nonce = nonce
 
-      block.Hash = str(hash)
-      block.Nonce = nonce
+    @staticmethod
+    def new_block(_data: str, _prevblockhash: str):
+        """creates and returns Block"""
+        block = Block(int(time()), _data, _prevblockhash, "", 0)
+        pow = ProofOfWork.new_proofofwork(block)
+        _hash, nonce = pow.run()
+        block.hash = _hash
+        block.nonce = nonce
+        return block
 
-      return block
+    @staticmethod
+    def new_genesis_block():
+        """Creates genesis block"""
+        return Block.new_block("Genesis Block", "")
 
-    def set_hash(self):
-      timestamp = int(self.Timestamp)
-      headers = str(timestamp) + str(self.PrevBlockHash) + self.Data
-      self.Hash = sha256(headers.encode()).hexdigest()
-
+    def __str__(self):
+        return """
+Timestamp: {}
+Data:      {}
+Prev.Hash: {}
+Hash:      {}
+nonce:     {}
+""".format(self.timestamp, self.data, self.prev_block_hash, self.hash, self.nonce)

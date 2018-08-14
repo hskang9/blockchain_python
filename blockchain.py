@@ -1,19 +1,24 @@
+"""Blockchain"""
 from block import Block
 
 
-class Blockchain(Block):
+class Blockchain(object):
+    """Blockchain"""
 
     def __init__(self, _blocks: list):
+        """Initialize blockchain which stores a list of blocks"""
         self.blocks = _blocks
 
     def add_block(self, _data: str):
-      prev_block = self.blocks[-1]
-      new_block = self.new_block(_data, prev_block.Hash)
-      self.blocks.append(new_block)
+        """saves provided data as a block in the blockchain"""
+        prev_block = self.blocks[-1]
+        new_block = Block.new_block(_data, prev_block.hash)
+        self.blocks.append(new_block)
 
-    def new_genesis_block(self):
-      return self.new_block( "Genesis block", b'Genesis')
+    @staticmethod
+    def new_blockchain():
+        """creates a new Blockchain with genesis Block"""
+        return Blockchain([Block.new_genesis_block()])
 
-
-    def new_blockchain(self):
-      return Blockchain([self.new_genesis_block()])
+    def __str__(self):
+        return str(self.blocks)
