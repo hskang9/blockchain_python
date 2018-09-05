@@ -16,12 +16,11 @@ class Blockchain(Block):
 
 
     def add_block(self, _data: str):
-        self.iterator.seek_to_first()
-        last_hash = self.iterator.key()
+        self.iterator.seek_to_last()
+        last_hash = self.deserialize(self.iterator.value()).Hash
         last_bit = self.deserialize(self.iterator.value()).NextRequiredBits
         new_block = self.new_block(_data, last_hash, last_bit)
-        self.db.put(new_block.Hash.encode(), new_block.serialize())
-        tip = new_block.Hash.encode()
+        self.db.put(f'bk_{last_bit}'.encode()  + new_block.Hash.encode(), new_block.serialize())
         self.db.close()
 
         return self
@@ -41,6 +40,5 @@ class Blockchain(Block):
         else:
             print("No existing blockchain found. Create Genesis first.")
             genesis = self.new_genesis_block()
-            self.db.put(genesis.Hash.encode(), genesis.serialize())
-            tip = genesis.Hash.encode()
+            self.db.put(f'bk_0'.encode() + genesis.Hash.encode(), genesis.serialize())
             return self

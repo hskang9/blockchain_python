@@ -10,6 +10,7 @@ class Block():
         self.Data = _data
         self.PrevBlockHash = _prevblockhash
         self.Bits = _bits
+        
 
 
     # new_block creates and returns Block

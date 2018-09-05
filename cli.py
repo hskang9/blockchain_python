@@ -33,7 +33,7 @@ def add_block(data):
 def printchain():
 
     bci = bc.iterator
-    bci.seek_to_last()
+    bci.seek_to_first()
     print("------------ Chain Start ------------")
     while(True):
         try:
@@ -44,7 +44,7 @@ def printchain():
             pow = ProofOfWork(block)
             print("TargetBits: %s\n"%(block.Bits))
             print("PoW: %s\n" % (pow.validate(block)))
-            bci.prev()
+            bci.next()
 
         except:
             return "------------- Chain End --------------"
