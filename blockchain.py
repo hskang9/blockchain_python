@@ -17,10 +17,11 @@ class Blockchain(Block):
 
     def add_block(self, _data: str):
         self.iterator.seek_to_last()
-        last_hash = self.deserialize(self.iterator.value()).Hash
-        last_bit = self.deserialize(self.iterator.value()).NextRequiredBits
+        last_block = get_last_block()
+        last_hash = last_block.Hash
+        last_bit = last_block.NextRequiredBits
         new_block = self.new_block(_data, last_hash, last_bit)
-        self.db.put(f'bk_{last_bit}'.encode()  + new_block.Hash.encode(), new_block.serialize())
+        self.db.put(f'bk_{last_bit}'.encode(), new_block.serialize())
         self.db.close()
 
         return self
@@ -29,6 +30,12 @@ class Blockchain(Block):
     def new_genesis_block(self):
         return self.new_block( "Genesis block", b'Genesis', 18)
 
+
+    def get_last_block(self):
+        self.iterator.seek_to_last()
+        return self.deserialize(self.iterator.value())
+
+    
 
     def new_blockchain(self):
         # Null check for DB's content
