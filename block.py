@@ -2,6 +2,8 @@ from time import time
 import json
 from hashlib import sha256
 from pow import *
+<<<<<<< HEAD
+=======
 import pickle
 
 class Block():
@@ -11,25 +13,34 @@ class Block():
         self.PrevBlockHash = _prevblockhash
         self.Bits = _bits
         
+>>>>>>> 5f5a8df1159de558af5cb0842dea9b4c7f9eeff1
 
 
-    # new_block creates and returns Block
-    def new_block(self, _data: str, _prevblockhash: bytearray, _bits: int):
-      block = Block(time(), _data, _prevblockhash, _bits)
-      pow = ProofOfWork(block)
-      nonce, hash, next_required_bits = pow.run()
+class Block():
+    def __init__(self, _timestamp, _merkleroot,  _prevhash, _bits):
+        self.timestamp = _timestamp
+        self.merkleroot = _merkleroot
+        self.prevhash = _prevhash
+        self.bits = _bits
+        self.hash = b''
+        self.nonce = 0
+        self.nextbits = 0
 
-      # Add new properties for mined block
-      block.Hash = hash
-      block.Nonce = nonce
-      block.NextRequiredBits = next_required_bits
 
-      return block
+    def new_block(self, _merkleroot: str, _prevhash: bytearray, _bits: int):
+        """
+        Create a new Block in the Blockchain
+        :param _merkleroot: hash of the merkletree
+        :param _prevhash: Hash of previous Block
+        :return: New Block
+        """
+        block = Block(time(), _merkleroot, _prevhash, _bits)
+        pow = ProofOfWork(block)
+        nonce, hash, nextbits = pow.run()
 
-    # serialize serializes Block
-    def serialize(self):
-        return pickle.dumps(self)
+        # Add new properties for mined block
+        block.hash = hash
+        block.nonce = nonce
+        block.nextbits = nextbits
 
-    # deserialize deserializes block
-    def deserialize(self, _encoded : str):
-        return pickle.loads(_encoded)
+        return block
